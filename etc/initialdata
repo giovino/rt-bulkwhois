@@ -1,0 +1,20 @@
+@Initial = (sub{ return 1; });
+
+@ScripActions = (
+    {
+        Name        => 'Bulkwhois ProcessMessage',
+        Description => 'Bulkwhois_ProcessMessage',
+        ExecModule  => 'Bulkwhois_ProcessMessage',
+    },
+);
+
+@Scrips = (
+    {
+        Description => 'zBulkwhois_ProcessMessage',
+        Queue       => ['General'],
+        ScripCondition  => 'On Create',
+        ScripAction => 'Bulkwhois ProcessMessage',
+        Template    => 'Blank',
+    },
+);
+1;
