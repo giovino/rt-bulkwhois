@@ -1,0 +1,22 @@
+INSTALLATION
+
+1. #> perl Makefile.PL
+2. #> make
+3. #> make install
+4. #> make initdb
+5. #> vi /opt/rt3/etc/RT_SiteConfig.pm
+
+Set(@Plugins,(qw(RT::Bulkwhois)));
+
+6. #> /etc/init.d/httpd reload
+
+FOR USE WITH RT+IR (Incident Response Plugin)
+
+Apply the following to your 'Incident Reports' queue:
+
+    Description => 'zBulkwhois_ProcessMessage'
+    Queue       => ['Incident Reports']
+    ScripCondition  => 'On Create'
+    ScripAction => 'Bulkwhois ProcessMessage'
+    Template    => 'Blank'
+
