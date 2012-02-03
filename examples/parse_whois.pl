@@ -24,7 +24,6 @@ my $impact              = $opts{'i'} || 'suspicious';
 my $source              = $opts{'s'} || 'localhost';
 my $specified_timestamp = $opts{'t'};
 
-my $x;
 my $timestamp;
 my $cymru_timestamp;
 
@@ -75,7 +74,8 @@ foreach (1 ... $#lines) {
     
     $array[-1] =~ s/\n$//;
 
-    $x = XML::IODEF::Simple->new({
+    ## should try to localize variables wherever possible
+    my $x = XML::IODEF::Simple->new({
         purpose     => 'reporting',
         address     => $array[1],
         detecttime  => $timestamp,
@@ -86,7 +86,10 @@ foreach (1 ... $#lines) {
     if (defined $debug) {
         #warn Dumper($x);
         print "$array[1]|$timestamp\n";
-    }   
+    } else {
+        # print out the XML using XML::IODEF's ->out() function
+        print $x->out();
+    }
 }
 
 sub get_timestamp {
@@ -94,12 +97,25 @@ sub get_timestamp {
     my $array = shift;
     my $cymru_timestamp = shift;
 
+    ## this could be replaced with:
+    ## for($#array){
+    ##      if(/^3$/){
+    ##          ...
+    ##          last;
+    ##      }
+    ##      if(/^4$/){
+    ##          ...
+    ##          last;
+    ##      }
+    ##      perldoc -f for, easier to add more statements to later on
+
     # Find the size of the array
     #
     my $array_size = @$array;
  
     # If there is not a info column, (array size == 3)
     #
+    ## could use: if($#array == 2), cleaner code ($#array will give you 0,1,3 which == 3)
     if ($array_size == 3) {
         if ($specified_timestamp) {
             return $specified_timestamp;
@@ -112,6 +128,7 @@ sub get_timestamp {
     # Look for timestamp if the info column exists
     # (e.g. a total of four columns)
     #
+    ## if($#array == 3)
     if ($array_size == 4) {
 
         my @t = split(/ /, @$array[2]);
